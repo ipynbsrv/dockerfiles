@@ -10,9 +10,10 @@ RUN apt-get update && apt-get -y install python3-pip
 RUN pip3 install terminado
 RUN pip3 install --pre "ipython[all]"
 
-# Packages and modules needed by nbconvert or .html export
+# Packages and modules needed by nbconvert or .html/.pdf export
 RUN apt-get -y install pandoc
-RUN pip3 install pygments
+RUN apt-get -y install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
+RUN pip install pygments
 
 # Copy my_init services into the container and make sure only root user can change it
 ADD ipython3-notebook.bin /usr/local/bin/init_cmd

@@ -10,8 +10,9 @@ RUN apt-get update && apt-get -y install python-dev python-pip
 RUN pip install terminado
 RUN pip install --pre "ipython[all]"
 
-# Packages and modules needed by nbconvert or .html export
+# Packages and modules needed by nbconvert or .html/.pdf export
 RUN apt-get -y install pandoc
+RUN apt-get -y install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
 RUN pip install pygments
 
 # Copy my_init services into the container and make sure only root user can change it
