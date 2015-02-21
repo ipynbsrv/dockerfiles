@@ -14,7 +14,8 @@ PORT=$1
 # GENERIC CLEANUP
 # ----------------------------
 # if this is a clone/not a fresh container, previously mounted home dirs
-# are somehow preversed. we need to remove them
+# are somehow preversed. we need to unmount and remove them
+find /home/* -maxdepth 1 -user root | xargs umount
 find /home/* -maxdepth 1 -user root -delete
 
 # ----------------------------
