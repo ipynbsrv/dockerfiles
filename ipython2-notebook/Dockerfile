@@ -1,8 +1,8 @@
 FROM ipynbsrv/base-ldap:latest
-MAINTAINER FHNW <ipynbsrv@fhnw.ch>
+MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 
-ENV HOME /root
-CMD ["/sbin/my_init", "--", "/usr/local/bin/init_cmd"]
+ENV DEBIAN_FRONTEND noninteractive
+
 
 # Install system-wide pip for IPython
 RUN apt-get update && apt-get -y install python-dev python-pip
@@ -21,8 +21,13 @@ RUN chown root:root /usr/local/bin/init_cmd
 RUN chmod 0644 /usr/local/bin/init_cmd
 RUN chmod +x /usr/local/bin/init_cmd
 
-# Expose the IPython notebook server; use --publish-all=true
-EXPOSE 8888
+# Create the data directory. /home, /public and /shares will be mounted inside
+RUN mkdir /data
 
 # Clean up APT when done.
 RUN apt-get autoremove && apt-get autoclean && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
+
+
+CMD ["/usr/local/bin/init_cmd"]
+VOLUME ["/data"]
+EXPOSE 8888
