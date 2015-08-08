@@ -21,7 +21,7 @@ MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 #
 # This template makes some assumptions/has requirements:
 #
-#   - the LDAP server is available at 192.168.0.1
+#   - the LDAP server is available at 192.168.0.1 (change otherwise)
 #   - the container's local working dir is /data
 #   - public directories are mounted to /data/public
 #   - shares are mounted to /data/shares
@@ -31,6 +31,11 @@ MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 #
 #   - a way to prevent password changes
 #   - proper cleanup/regen of SSH keys
+#
+# The following environment variables are set:
+#
+#   - OWNER: The username of the container owner
+#   - BASE_URL: The base URL the proxied service should listen on
 #
 
 
@@ -91,7 +96,10 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
 
 
 ENTRYPOINT ["/sbin/my_init", "--"]
+
+ENV BASE_URL ""
 ENV OWNER ""
+
 EXPOSE 22
 
 VOLUME /data/public

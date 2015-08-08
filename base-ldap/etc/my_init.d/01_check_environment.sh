@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 
 if [ -z "${BASE_URL+x}" ]; then
   echo "ERROR: No BASE_URL defined. Exiting."

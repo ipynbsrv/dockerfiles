@@ -5,9 +5,7 @@ echo "$OWNER" > /etc/login.user.allowed
 
 # link his home directory to /data/home
 LINKED_HOME="/data/home"
-if [ ! -L "$LINKED_HOME" ]; then
-  unlink "$LINKED_HOME"
-fi
+rm -rf "$LINKED_HOME"
 ln -s "/home/$OWNER" "$LINKED_HOME"
 
 # chown the container's data to the current user
@@ -16,5 +14,4 @@ find /data/ \
   -not -path "/data/home/*" \
   -not -path "/data/public/*" \
   -not -path "/data/shares/*" \
-  -not -user root \
-  | xargs chown "$OWNER:$OWNER"
+  -not -user root | xargs chown "$OWNER:$OWNER"
