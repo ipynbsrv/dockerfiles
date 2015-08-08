@@ -1,42 +1,95 @@
-FROM phusion/baseimage:0.9.15
+FROM phusion/baseimage:0.9.17
 MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 
-ENV DEBIAN_FRONTEND noninteractive
+
+#
+# ipynbsrv Docker base template
+#
+# This template should be used as a base for all images being made available to users.
+#
+# It ensures:
+#
+#   - the container is configured to use the internal LDAP server for authentication
+#   - the SSH service is running and started on boot, so the user can enter the container
+#   - only the user owning the container can enter
+#
+# For the last to work, make sure you provide:
+#
+#   - the OWNER environment variable upon container creation
+#
+# This template makes some assumptions/has requirements:
+#
+#   - the LDAP server is available at 192.168.0.1
+#   - the container's local working dir is /data
+#   - public directories are mounted to /data/public
+#   - shares are mounted to /data/shares
+#   - home directories are mounted to /home
+#
+# Currently not implemented but needed:
+#
+#   - a way to prevent password changes
+#   - proper cleanup/regen of SSH keys
+#
 
 
-# Prevent root logins
+# update the package index for later installations
+RUN DEBIAN_FRONTEND=noninteractive apt-get update
+
+# lock down the root user
 RUN passwd -d root && passwd -l root
 
-# Install LDAP client packages and other tools
-RUN apt-get update && apt-get -y install libpam-ldap sed
-
-# Configure the LDAP client (server to use etc.)
-RUN sed -i 's/base dc=example,dc=net/base dc=ipynbsrv,dc=ldap/' /etc/ldap.conf
-RUN sed -i 's/uri ldapi:\/\/\//uri ldap:\/\/ipynbsrv.ldap/' /etc/ldap.conf
-RUN sed -i 's/rootbinddn cn=manager,dc=example,dc=net/rootbinddn cn=admin,dc=ipynbsrv,dc=ldap/' /etc/ldap.conf
-RUN sed -i 's/compat/compat ldap/' /etc/nsswitch.conf
-
-# Override the default shell defined in LDAP (none in our case)
-RUN echo "nss_override_attribute_value loginShell /bin/bash" >> /etc/ldap.conf
-
-# Allow password based SSH login but only for container owner
+# enable the SSH service
 RUN rm -f /etc/service/sshd/down
+# allow password based SSH login
 RUN echo "UsePAM yes" >> /etc/ssh/sshd_config
 RUN echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config
-# http://www.cyberciti.biz/tips/linux-pam-configuration-that-allows-or-deny-login-via-the-sshd-server.html
-RUN echo "auth required pam_listfile.so item=user sense=allow file=/etc/ssh/sshd.allow onerr=fail" >> /etc/pam.d/sshd
 
-# Disallow login for users where the home directory does not exist -> in our case, those are not the container owner
-RUN sed -i 's/DEFAULT_HOME/#DEFAULT_HOME/' /etc/login.defs
-RUN echo "DEFAULT_HOME no" >> /etc/login.defs
-RUN cat /etc/bash.bashrc > /etc/bash.bashrc_pkg
-RUN [ "echo", "[[ ! -x $HOME ]] && exit 1", ">", "/etc/bash.bashrc" ]
-RUN cat /etc/bash.bashrc_pkg >> /etc/bash.bashrc
-RUN rm /etc/bash.bashrc_pkg
+# allow only defined users to enter the container
+# http://www.cyberciti.biz/tips/howto-deny-allow-linux-user-group-login.html
+# http://www.cyberciti.biz/faq/bash-prepend-text-lines-to-file/
+RUN touch /etc/login.user.allowed
+RUN sed -i '1i auth required pam_listfile.so item=user sense=allow file=/etc/login.user.allowed onerr=fail' /etc/pam.d/common-auth
+
+# install and configure the LDAP package
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install libpam-ldapd
+# comment defaults out
+RUN sed -i 's/compat/compat ldap/' /etc/nsswitch.conf
+RUN sed -i 's/uri/#uri/' /etc/nslcd.conf
+RUN sed -i 's/base/#base/' /etc/nslcd.conf
+# FIXME: these should be provided via ENV, not be hardcoded
+# set new values based on ipynbsrv defaults
+RUN echo "uri ldap://192.168.0.1/" >> /etc/nslcd.conf
+RUN echo "base ou=groups,dc=ipynbsrv,dc=ldap" >> /etc/nslcd.conf
+RUN echo "base ou=users,dc=ipynbsrv,dc=ldap" >> /etc/nslcd.conf
+
+# override some defaults defined in LDAP (if none is set and for security)
+RUN echo "nss_override_attribute_value loginShell /bin/bash" >> /etc/ldap/ldap.conf
+
+# ensure the LDAP required daemons start on boot
+COPY etc/my_init.d/01_start_ldap_services.sh /etc/my_init.d/01_start_ldap_services.sh
+RUN chmod +x /etc/my_init.d/01_start_ldap_services.sh
+
+# provide the script setting owner permissions etc.
+COPY etc/my_init.d/02_prepare_for_owner.sh /etc/my_init.d/02_prepare_for_owner.sh
+RUN chmod +x /etc/my_init.d/02_prepare_for_owner.sh
+
+# prepare the volume directories
+RUN mkdir /data
+RUN chmod 0777 /data
+RUN mkdir /data/public
+RUN mkdir /data/shares
 
 # Cleanup
-RUN apt-get autoremove && apt-get autoclean && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
+RUN apt-get -y autoremove && apt-get -y autoclean && apt-get -y clean
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
 
 
-ENTRYPOINT ["sbin/my_init", "--"]
+ENTRYPOINT ["/sbin/my_init", "--"]
+
+ENV OWNER ""
+
 EXPOSE 22
+
+VOLUME /data/public
+VOLUME /data/shares
+VOLUME /home
