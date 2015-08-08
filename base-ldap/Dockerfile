@@ -67,13 +67,17 @@ RUN echo "base ou=users,dc=ipynbsrv,dc=ldap" >> /etc/nslcd.conf
 # override some defaults defined in LDAP (if none is set and for security)
 RUN echo "nss_override_attribute_value loginShell /bin/bash" >> /etc/ldap/ldap.conf
 
+# script to perform system checks
+COPY etc/my_init.d/01_check_environment.sh /etc/my_init.d/01_check_environment.sh
+RUN chmod +x /etc/my_init.d/01_check_environment.sh
+
 # ensure the LDAP required daemons start on boot
-COPY etc/my_init.d/01_start_ldap_services.sh /etc/my_init.d/01_start_ldap_services.sh
-RUN chmod +x /etc/my_init.d/01_start_ldap_services.sh
+COPY etc/my_init.d/02_start_ldap_services.sh /etc/my_init.d/02_start_ldap_services.sh
+RUN chmod +x /etc/my_init.d/02_start_ldap_services.sh
 
 # provide the script setting owner permissions etc.
-COPY etc/my_init.d/02_prepare_for_owner.sh /etc/my_init.d/02_prepare_for_owner.sh
-RUN chmod +x /etc/my_init.d/02_prepare_for_owner.sh
+COPY etc/my_init.d/03_prepare_for_owner.sh /etc/my_init.d/03_prepare_for_owner.sh
+RUN chmod +x /etc/my_init.d/03_prepare_for_owner.sh
 
 # prepare the volume directories
 RUN mkdir /data
