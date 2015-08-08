@@ -3,7 +3,9 @@ MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 
 
 #
-# ipynbsrv Docker base template
+# ipynbsrv Docker container backend base template
+# (ipynbsrv.backends.container_backends.Docker)
+# -----------------------------------------------
 #
 # This template should be used as a base for all images being made available to users.
 #
@@ -15,7 +17,7 @@ MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 #
 # For the last to work, make sure you provide:
 #
-#   - the OWNER environment variable upon container creation
+#   - the OWNER environment variable upon container creation (the backend will do that for you)
 #
 # This template makes some assumptions/has requirements:
 #
@@ -79,15 +81,13 @@ RUN chmod 0777 /data
 RUN mkdir /data/public
 RUN mkdir /data/shares
 
-# Cleanup
+# cleanup
 RUN apt-get -y autoremove && apt-get -y autoclean && apt-get -y clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
 
 
 ENTRYPOINT ["/sbin/my_init", "--"]
-
 ENV OWNER ""
-
 EXPOSE 22
 
 VOLUME /data/public
