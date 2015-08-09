@@ -8,7 +8,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update
 # install system-wide pip for IPython
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python-dev python-pip
 # install IPython + Notebook
-RUN pip install terminado
 RUN pip install "ipython[notebook]"
 
 # packages and modules needed by nbconvert or .html/.pdf export
@@ -28,5 +27,6 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
 
 
 CMD ["/usr/local/bin/init_cmd"]
+ENV BASE_URL ""
 EXPOSE 8888
 VOLUME ["/data"]

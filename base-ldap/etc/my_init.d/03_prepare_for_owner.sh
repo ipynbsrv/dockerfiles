@@ -14,4 +14,4 @@ find /data/ \
   -not -path "/data/home/*" \
   -not -path "/data/public/*" \
   -not -path "/data/shares/*" \
-  -not -user root | xargs chown "$OWNER:$OWNER"
+  -not -user root | xargs --no-run-if-empty chown "$OWNER:$OWNER"

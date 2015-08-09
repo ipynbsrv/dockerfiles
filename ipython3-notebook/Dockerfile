@@ -28,5 +28,6 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
 
 
 CMD ["/usr/local/bin/init_cmd"]
+ENV BASE_URL ""
 EXPOSE 8888
 VOLUME ["/data"]

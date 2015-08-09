@@ -35,7 +35,6 @@ MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 # The following environment variables are set:
 #
 #   - OWNER: The username of the container owner
-#   - BASE_URL: The base URL the proxied service should listen on
 #
 
 
@@ -96,10 +95,7 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
 
 
 ENTRYPOINT ["/sbin/my_init", "--"]
-
-ENV BASE_URL ""
 ENV OWNER ""
-
 EXPOSE 22
 
 VOLUME /data/public
