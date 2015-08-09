@@ -18,7 +18,6 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update
 # install system-wide pip for IPython
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python3-dev python3-pip
 # install IPython + Notebook
-RUN pip3 install terminado
 RUN pip3 install "ipython[notebook]"
 
 # packages and modules needed by nbconvert or .html/.pdf export
