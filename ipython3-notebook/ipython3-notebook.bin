@@ -17,7 +17,7 @@ if [ ! -d "$IPYTHON_DIR" ]; then
     ipython3 profile create default --ipython-dir="$IPYTHON_DIR"
 fi
 IPYTHON_NB_CONF="$IPYTHON_DIR/profile_default/ipython_notebook_config.py"
-sed -i "s/[# ]*c.NotebookApp.base_url = '.*'/c.NotebookApp.base_url = '$BASE_URL'/" "$IPYTHON_NB_CONF"
+sed -i "s|[# ]*c.NotebookApp.base_url = '.*'|c.NotebookApp.base_url = '$BASE_URL'|" -i "$IPYTHON_NB_CONF"
 
 # a dirty way to fix permissions error when starting a cloned container
 # nobody knows why...
