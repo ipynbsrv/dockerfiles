@@ -2,6 +2,16 @@ FROM ipynbsrv/base-ldap:latest
 MAINTAINER Michel Käser <michel.kaeser@students.fhnw.ch>
 
 
+#
+# IPython Notebook template (Python2 version)
+# -----------------------------------------------
+#
+# Command: (leave empty)
+# Protected Port: 8888
+# Public Ports: 22 (inherited from base-ldap)
+#
+
+
 # update the package index for later installations
 RUN DEBIAN_FRONTEND=noninteractive apt-get update
 

@@ -8,11 +8,12 @@ MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 # -----------------------------------------------
 #
 # This template should be used as a base for all images being made available to users.
+# It should however NOT be added to the ipynbsrv application's image database.
 #
 # It ensures:
 #
 #   - the container is configured to use the internal LDAP server for authentication
-#   - the SSH service is running and started on boot, so the user can enter the container
+#   - the SSH service is running and started on boot so the user can enter the container
 #   - only the user owning the container can enter
 #
 # For the last to work, make sure you provide:
@@ -22,15 +23,11 @@ MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 # This template makes some assumptions/has requirements:
 #
 #   - the LDAP server is available at 192.168.0.1 (change otherwise)
-#   - the container's local working dir is /data
-#   - public directories are mounted to /data/public
-#   - shares are mounted to /data/shares
-#   - home directories are mounted to /home
 #
 # Currently not implemented but needed:
 #
 #   - a way to prevent password changes
-#   - proper cleanup/regen of SSH keys
+#   - proper cleanup/regeneration of SSH keys
 #
 # The following environment variables are set:
 #
