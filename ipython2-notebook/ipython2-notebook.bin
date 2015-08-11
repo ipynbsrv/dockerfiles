@@ -9,21 +9,11 @@ fi
 # cloned containers may otherwise contain files by other users so we wouldn't have permissions
 chown -R "$OWNER" /usr/local/lib/python2.7/dist-packages/
 
-# create the IPython profile
-# we need it before we start so we can set the base_url
-IPYTHON_DIR="/data/.ipython"
-if [ ! -d "$IPYTHON_DIR" ]; then
-  /sbin/setuser "$OWNER" \
-    ipython profile create default --ipython-dir="$IPYTHON_DIR"
-fi
-IPYTHON_NB_CONF="$IPYTHON_DIR/profile_default/ipython_notebook_config.py"
-sed -i "s|[# ]*c.NotebookApp.base_url = '.*'|c.NotebookApp.base_url = '$BASE_URL'|" -i "$IPYTHON_NB_CONF"
-
 # a dirty way to fix permissions error when starting a cloned container
 # nobody knows why...
 IPYTHON_SECURITY_DIR="/data/.ipython/profile_default/security"
 rm -rf $IPYTHON_SECURITY_DIR
-mkdir $IPYTHON_SECURITY_DIR
+mkdir -p $IPYTHON_SECURITY_DIR
 chown "$OWNER:$OWNER" $IPYTHON_SECURITY_DIR
 chmod 0700 $IPYTHON_SECURITY_DIR
 
@@ -31,4 +21,5 @@ chmod 0700 $IPYTHON_SECURITY_DIR
 echo "Starting the IPython notebook under user '$OWNER' with base url '$BASE_URL'..."
 /sbin/setuser "$OWNER" \
     ipython notebook --no-browser --ip=0.0.0.0 \
-    --ipython-dir="$IPYTHON_DIR" --notebook-dir=/data
+    --ipython-dir="$IPYTHON_DIR" --notebook-dir=/data \
+    --NotebookApp.base_url="$BASE_URL"
