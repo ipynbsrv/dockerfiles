@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# chown all Python modules to the current user
+# cloned containers may otherwise contain files by other users so we wouldn't have permissions
+chown -R "$OWNER" /usr/local/lib/python2.7/dist-packages/
+
+# start the rodeo server
+echo "Starting the rodeo server under user '$OWNER'..."
+/sbin/setuser "$OWNER" \
+    rodeo /data --no-browser --host=0.0.0.0 --port=8888
