@@ -26,7 +26,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install texlive-latex-base texlive
 RUN pip3 install pygments
 
 # copy my_init services into the container and make sure only root user can change it
-ADD ipython3-notebook.bin /usr/local/bin/init_cmd
+ADD lib/ipython3-notebook.bin /usr/local/bin/init_cmd
 RUN chown root:root /usr/local/bin/init_cmd
 RUN chmod 0644 /usr/local/bin/init_cmd
 RUN chmod +x /usr/local/bin/init_cmd

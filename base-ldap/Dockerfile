@@ -73,15 +73,15 @@ RUN sed -i 's/600/30/' /etc/nscd.conf
 RUN sed -i 's/330/30/' /etc/nscd.conf
 
 # script to perform system checks
-COPY etc/my_init.d/01_check_environment.sh /etc/my_init.d/01_check_environment.sh
+COPY lib/01_check_environment.sh /etc/my_init.d/01_check_environment.sh
 RUN chmod +x /etc/my_init.d/01_check_environment.sh
 
 # ensure the LDAP required daemons start on boot
-COPY etc/my_init.d/02_start_ldap_services.sh /etc/my_init.d/02_start_ldap_services.sh
+COPY lib/02_start_ldap_services.sh /etc/my_init.d/02_start_ldap_services.sh
 RUN chmod +x /etc/my_init.d/02_start_ldap_services.sh
 
 # provide the script setting owner permissions etc.
-COPY etc/my_init.d/03_prepare_for_owner.sh /etc/my_init.d/03_prepare_for_owner.sh
+COPY lib/03_prepare_for_owner.sh /etc/my_init.d/03_prepare_for_owner.sh
 RUN chmod +x /etc/my_init.d/03_prepare_for_owner.sh
 
 # prepare the volume directories

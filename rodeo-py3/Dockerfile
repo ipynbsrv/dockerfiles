@@ -20,28 +20,15 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python3-dev python3-pip sed
 # install rodeo
 RUN pip3 install rodeo
+RUN pip install ipykernel
 
 # 'fix' the rodeo package to work behind the proxy
 # see: http://flask.pocoo.org/snippets/35/
-RUN echo "class ReverseProxied(object):
-    def __init__(self, app):
-        self.app = app
-
-    def __call__(self, environ, start_response):
-        script_name = environ.get('HTTP_X_SCRIPT_NAME', '')
-        if script_name:
-            environ['SCRIPT_NAME'] = script_name
-            path_info = environ['PATH_INFO']
-            if path_info.startswith(script_name):
-                environ['PATH_INFO'] = path_info[len(script_name):]
-
-        scheme = environ.get('HTTP_X_SCHEME', '')
-        if scheme:
-            environ['wsgi.url_scheme'] = scheme
-        return self.app(environ, start_response)
-        "|cat - /usr/local/lib/python2.7/dist-packages/rodeo/rodeo.py > /tmp/out && mv /tmp/out /usr/local/lib/python2.7/dist-packages/rodeo/rodeo.py
-
-RUN sed -i "s|Flask(__name__)|Flask(__name__)\\napp.wsgi_app = ReverseProxied\(app.wsgi_app\)|" /usr/local/lib/python3.4/dist-packages/rodeo/rodeo.py
+ADD lib/ReverseProxied.py ReverseProxied.py
+RUN cat /usr/local/lib/python3.4/dist-packages/rodeo/rodeo.py > /tmp/out
+RUN cat ReverseProxied.py /tmp/out > /usr/local/lib/python2.7/dist-packages/rodeo/rodeo.py
+RUN rm -f ReverseProxied.py
+RUN sed -i "s|Flask(__name__)|Flask(__name__)\\napp.wsgi_app = ReverseProxied\(app.wsgi_app\)|" /usr/local/lib/python2.7/dist-packages/rodeo/rodeo.py
 
 # copy my_init services into the container and make sure only root user can change it
 ADD rodeo.bin /usr/local/bin/init_cmd
