@@ -14,7 +14,7 @@ chown -R "$OWNER" /usr/local/lib/python2.7/dist-packages/
 IPYTHON_SECURITY_DIR="/data/.ipython/profile_default/security"
 rm -rf $IPYTHON_SECURITY_DIR
 mkdir -p $IPYTHON_SECURITY_DIR
-chown "$OWNER:$OWNER" $IPYTHON_SECURITY_DIR
+chown -R "$OWNER:$OWNER" /data/.ipython
 chmod 0700 $IPYTHON_SECURITY_DIR
 
 # start the IPython notebook server
