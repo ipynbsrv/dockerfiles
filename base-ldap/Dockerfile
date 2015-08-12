@@ -66,7 +66,7 @@ RUN echo "base ou=groups,dc=ipynbsrv,dc=ldap" >> /etc/nslcd.conf
 RUN echo "base ou=users,dc=ipynbsrv,dc=ldap" >> /etc/nslcd.conf
 
 # override some defaults defined in LDAP (if none is set and for security)
-RUN echo "nss_override_attribute_value loginShell /bin/bash" >> /etc/ldap.conf
+RUN echo "map passwd loginShell "/bin/bash"" >> /etc/nslcd.conf
 
 # lower the cache TTL for LDAP records (nscd)
 RUN sed -i 's/600/30/' /etc/nscd.conf

@@ -18,7 +18,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update
 # install system-wide pip for IPython
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install python-dev python-pip
 # install IPython + Notebook
-RUN pip install "ipython[notebook]"
+RUN pip install "ipython[notebook]"==3.2.1
 
 # packages and modules needed by nbconvert or .html/.pdf export
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install pandoc
