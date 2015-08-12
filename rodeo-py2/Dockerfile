@@ -52,4 +52,3 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
 
 CMD ["/usr/local/bin/init_cmd"]
 EXPOSE 8888
-VOLUME ["/data"]

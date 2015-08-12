@@ -21,6 +21,3 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install octave
 # cleanup
 RUN apt-get -y autoremove && apt-get -y autoclean && apt-get -y clean
 RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /etc/*-
-
-
-VOLUME ["/data"]
