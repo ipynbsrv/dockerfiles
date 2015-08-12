@@ -99,6 +99,6 @@ ENTRYPOINT ["/sbin/my_init", "--"]
 ENV OWNER ""
 EXPOSE 22
 
-VOLUME /data/public
-VOLUME /data/shares
-VOLUME /home
+VOLUME ["/data/public"]
+VOLUME ["/data/shares"]
+VOLUME ["/home"]

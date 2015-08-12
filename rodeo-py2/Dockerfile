@@ -11,6 +11,15 @@ MAINTAINER Michel Käser <michel.kaeser@students.fhnw.ch>
 # Protected Port: 8888
 # Public Ports: 22 (inherited from base-ldap)
 #
+# Notes
+#
+#   - additional Python modules can be installed with
+#     pip install -t /data/.pip <package>
+#
+#   - The '/data/.pip' directory should then be added to the Python path
+#     import sys
+#     sys.path.append("/data/.pip")
+#
 
 
 # update the package index for later installations
