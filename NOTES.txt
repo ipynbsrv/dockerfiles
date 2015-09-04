@@ -1,0 +1,9 @@
+Stuff that would be interesting to containerize.
+See https://github.com/Kickball/awesome-selfhosted:
+
+  - [ ] http://codiad.com
+  - [ ] https://github.com/liftoff/GateOne/
+  - [ ] https://www.openproject.org
+  - [ ] https://github.com/yudai/gotty
+  - [ ] https://github.com/feedbin/feedbin
+  - [ ] https://onionshare.org
