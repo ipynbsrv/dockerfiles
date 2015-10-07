@@ -1,4 +1,4 @@
-FROM ipynbsrv/base-ldap:latest
+FROM coco/base-ldap:latest
 MAINTAINER Michel Käser <michel.kaeser@students.fhnw.ch>
 
 

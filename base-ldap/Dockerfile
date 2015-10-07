@@ -3,12 +3,12 @@ MAINTAINER FHNW <michel.kaeser@students.fhnw.ch>
 
 
 #
-# ipynbsrv Docker container backend base template
-# (ipynbsrv.backends.container_backends.Docker)
+# coco Docker container backend base template
+# (coco.backends.container_backends.Docker)
 # -----------------------------------------------
 #
 # This template should be used as a base for all images being made available to users.
-# It should however NOT be added to the ipynbsrv application's image database.
+# It should however NOT be added to the coco application's image database.
 #
 # It ensures:
 #
@@ -60,10 +60,10 @@ RUN sed -i 's/compat/compat ldap/' /etc/nsswitch.conf
 RUN sed -i 's/uri/#uri/' /etc/nslcd.conf
 RUN sed -i 's/base/#base/' /etc/nslcd.conf
 # FIXME: these should be provided via ENV, not be hardcoded
-# set new values based on ipynbsrv defaults
+# set new values based on coco defaults
 RUN echo "uri ldap://192.168.0.1/" >> /etc/nslcd.conf
-RUN echo "base ou=groups,dc=ipynbsrv,dc=ldap" >> /etc/nslcd.conf
-RUN echo "base ou=users,dc=ipynbsrv,dc=ldap" >> /etc/nslcd.conf
+RUN echo "base ou=groups,dc=coco,dc=ldap" >> /etc/nslcd.conf
+RUN echo "base ou=users,dc=coco,dc=ldap" >> /etc/nslcd.conf
 
 # override some defaults defined in LDAP (if none is set and for security)
 RUN echo "map passwd loginShell "/bin/bash"" >> /etc/nslcd.conf
